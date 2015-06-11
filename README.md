@@ -13,7 +13,7 @@ opposed to building inside of Strip.
 Recommended modules
 =====
 
-I'm opinionated. Here are a few good modules to install on just about
+We're opinionated. Here are a few good modules to install on just about
 every Drupal site. If it isn't here, try to do without it. You may find 
 Drupal is better as a framework.
 
