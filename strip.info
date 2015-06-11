@@ -1,0 +1,21 @@
+name = Strip
+description = Overwrites (and removes) much of the unnecessary mark-up in Drupal core.
+core = 7.x
+
+; ==========
+; You should copy these to a subtheme or override page.tpl.php 
+; to match your own region definitions
+regions[header] = Header
+regions[navigation] = Navigation
+regions[content] = Content
+regions[footer] = Footer
+
+
+stylesheets[all][] = css/strip.css
+
+
+settings[toggle_logo] = 0
+settings[site_slogan] = 0
+settings[toggle_favicon] = 1
+settings[toggle_main_menu] = 0
+settings[toggle_secondary_menu] = 0
