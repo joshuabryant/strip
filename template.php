@@ -1,6 +1,5 @@
 <?php
 
-
 /*
  * Implements HOOK_html_head_alter()
  */
@@ -20,12 +19,30 @@ function strip_css_alter(&$css) {
     'modules/node/node.css',
   );
 
+  $groups = array();
   foreach($css as $path => $settings) {
     // remove unwanted system CSS
     if (in_array($path, $unset)) {
       unset($css[$path]);
+    } else {
+      $groups[$settings['group']][$path] = $settings;
     }
   }
+
+  // flatten to single group
+  $newcss = array();
+  ksort($groups);
+  $cnt = 0;
+  foreach ($groups as $key => $group) {
+    foreach ($group as &$settings) {
+      $settings['group'] = 0;
+      $settings['weight'] = $cnt;
+      $cnt++;
+    }
+    $newcss = array_merge($newcss, $group);
+  }
+
+  $css = $newcss;
 }
 
 
@@ -35,7 +52,7 @@ function strip_css_alter(&$css) {
 function strip_js_alter(&$js) {
   foreach($js as $path => $settings) {
     // move scripts to footer
-    if(!in_array($path, array())) {
+    if(!in_array($path, array('sites/all/themes/strip/js/vendor/modernizr.min.js'))) {
       $js[$path]['scope'] = 'footer';
     }
   }
@@ -54,7 +71,14 @@ function strip_form_alter(&$form, &$form_state, $form_id) {
 }
 
 
-
+/**
+ * Implement TEMPLATE_preprocess_block()
+ */
+function strip_preprocess_block(&$vars) {
+  if (!empty($vars['block_html_id'])) {
+    $vars['classes_array'][] = $vars['block_html_id'];
+  }
+}
 
 
 /**
@@ -63,7 +87,6 @@ function strip_form_alter(&$form, &$form_state, $form_id) {
 function strip_preprocess_region(&$vars) {
   $vars['classes_array'] = array($vars['region']);
 }
-
 
 
 /*
@@ -91,9 +114,6 @@ function strip_preprocess_field(&$vars) {
 }
 
 
-
-
-
 /*
  * Implements THEME_field()
  */
@@ -102,7 +122,7 @@ function strip_field($vars) {
 
   // render the label (if it's not hidden)
   if (!$vars['label_hidden']) {
-    $output .= '<h3 class="field-label"' . $vars['title_attributes'] . '>' . $vars['label'] . '</h3>';
+    $output .= '<div class="field-label field-label-' . $vars['element']['#label_display'] . '"' . $vars['title_attributes'] . '>' . $vars['label'] . '</div>';
   }
 
   // only wrap all items if more than one item
@@ -119,7 +139,7 @@ function strip_field($vars) {
     }
 
     // only wrap items (and add striping) if more than one item
-    if (count($vars['items']) > 1) {
+    if (count($vars['items']) > 1 || !$vars['label_hidden']) {
       $output .= '<div class="' . $classes . '"' . $vars['item_attributes'][$delta] . '>' . $itemoutput . '</div>';
     } else {
       $output .= $itemoutput;
@@ -133,7 +153,6 @@ function strip_field($vars) {
 
   return $output;
 }
-
 
 
 /*
