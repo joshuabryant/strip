@@ -5,6 +5,16 @@
  */
 function strip_html_head_alter(&$head_elements) {
   unset($head_elements['system_meta_generator']);
+  
+  $head_elements['strip_meta_ie_edge'] = array(
+    '#type' => 'html_tag',
+    '#tag' => 'meta',
+    '#attributes' => array(
+      'http-equiv' => 'X-UA-Compatible',
+      'content' => 'IE=Edge',
+    ),
+    '#weight' => -900,
+  );
 }
 
 
