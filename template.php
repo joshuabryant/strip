@@ -6,12 +6,21 @@
 function strip_html_head_alter(&$head_elements) {
   unset($head_elements['system_meta_generator']);
   
-  $head_elements['strip_meta_ie_edge'] = array(
+  $head_elements['meta_ie_edge'] = array(
     '#type' => 'html_tag',
     '#tag' => 'meta',
     '#attributes' => array(
       'http-equiv' => 'X-UA-Compatible',
       'content' => 'IE=Edge',
+    ),
+    '#weight' => -900,
+  );
+  $head_elements['meta_viewport'] = array(
+    '#type' => 'html_tag',
+    '#tag' => 'meta',
+    '#attributes' => array(
+      'name' => 'viewport',
+      'content' => 'width=device-width, initial-scale=1.0, minimum-scale=1.0',
     ),
     '#weight' => -900,
   );
